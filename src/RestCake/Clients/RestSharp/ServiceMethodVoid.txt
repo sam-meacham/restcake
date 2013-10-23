@@ -1,0 +1,4 @@
+﻿		public void <#= MethodName #>(<#= MethodArgs #>)
+		{
+			InvokeServiceMethod<object>("<#= MethodUrl #>", <#= IsWrappedRequest #>, <#= IsWrappedResponse #>, Method.<#= HttpVerb #>, <#= Parameters #>);
+		}

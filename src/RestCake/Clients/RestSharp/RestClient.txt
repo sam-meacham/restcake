@@ -1,0 +1,14 @@
+namespace <#= Namespace #>
+{
+	using RestCake;
+	using RestSharp;
+
+	public class <#= ClientClassName #> : RestCake.RestSharpClientBase
+	{
+		public <#= ClientClassName #>(string baseUrl)
+			: base(baseUrl)
+		{ }
+
+<#= ClientServiceMethods #>
+	}
+}

@@ -1,0 +1,118 @@
+namespace RestCake
+{
+	using System;
+	using System.IO;
+	using System.Net;
+	using System.Text;
+	using System.Web;
+	using Newtonsoft.Json;
+	using RestSharp;
+
+
+	public abstract class RestSharpClientBase
+	{
+		// Base url of the service.  Immutable.
+		private readonly string m_baseUrl;
+		public string BaseUrl { get { return m_baseUrl; } }
+
+		// The RestSharp client.  Immutable.
+		private readonly RestClient m_client;
+
+		public RestRequest LastRequest { get; private set; }
+		public RestResponse LastResponse { get; private set; }
+
+
+
+		protected RestSharpClientBase(string baseUrl)
+		{
+			if (string.IsNullOrEmpty(baseUrl))
+				throw new ArgumentNullException("baseUrl", "baseUrl cannot be null or empty");
+
+			if (!baseUrl.Trim().EndsWith("/"))
+				baseUrl += "/";
+			m_baseUrl = baseUrl;
+
+			m_client = new RestClient(m_baseUrl);
+		}
+
+
+		protected T InvokeServiceMethod<T>(string methodUrl, bool wrappedRequest, bool wrappedResponse, Method httpVerb, Parameter[] parameters)
+		{
+			if (parameters == null)
+				parameters = new Parameter[0];
+
+			RestRequest request = new RestRequest(methodUrl, httpVerb) { RequestFormat = DataFormat.Json };
+
+			StringBuilder sbQueryString = new StringBuilder();
+
+			StringBuilder sbRequestBody = new StringBuilder();
+			JsonTextWriter jwriter = new JsonTextWriter(new StringWriter(sbRequestBody));
+
+			/*
+			if (wrappedRequest)
+				jwriter.WriteStartObject();
+			*/
+
+			foreach (Parameter param in parameters)
+			{
+				if (param.Type == ParameterType.RequestBody)
+				{
+					request.AddBody(param.Value);
+				}
+				else
+				{
+					request.AddParameter(param);
+				}
+
+				/*
+				switch (param.Type)
+				{
+					case ParameterType.UrlSegment:
+						request.AddParameter(param.Name, param.Value, ParameterType.UrlSegment);
+						break;
+
+					case ParameterType.GetOrPost:
+						if (httpVerb == Method.GET)
+						{
+							sbQueryString.AppendFormat("&{0}={1}", HttpUtility.UrlEncode(param.Name), HttpUtility.UrlEncode(param.Value.ToString()));
+						}
+						else if (wrappedRequest)
+						{
+							Type paramType = param.Value.GetType();
+
+							jwriter.WritePropertyName(param.Name);
+
+							if (paramType.IsPrimitive || paramType.Module.Name == "mscorlib.dll")
+								jwriter.WriteValue(param.Value);
+							else
+								jwriter.WriteRaw(JsonConvert.SerializeObject(param.Value));
+						}
+						else
+						{
+							// TODO: Make sure this only happens once.  Otherwise, they have multiple params with a bare request (not allowed).
+							jwriter.WriteValue(param.Value);
+						}
+						break;
+
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+				*/
+			}
+
+			/*
+			if (wrappedRequest)
+				jwriter.WriteEndObject();
+			*/
+
+			LastRequest = request;
+			RestResponse response = m_client.Execute(request);
+
+			LastResponse = response;
+
+			T result = JsonConvert.DeserializeObject<T>(response.Content);
+			return result;
+		}
+
+	}
+}

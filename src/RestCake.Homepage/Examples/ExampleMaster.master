@@ -1,0 +1,136 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/Site1.Master" AutoEventWireup="true" CodeBehind="ExampleMaster.master.cs" Inherits="ExampleServices.Examples.ExampleMaster" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+	<style type="text/css">
+		#rawResult
+		{
+			font-size: 0.8em;
+			line-height: 1.2em;
+			overflow-y: auto;
+			width: 100%;
+			border: none;
+		}
+		
+		.lcol
+		{
+			width: 120px;
+		}
+	</style>
+
+	<script type="text/javascript">
+		function selectReceived()
+		{
+			$("#rawResult").select();
+		}
+
+
+		// Aesthetics and event handlers
+		$(document).ready(function ()
+		{
+			$(document).ajaxSend(function (evt, xhr, ajaxOptions)
+			{
+				$("#urlOut").text(ajaxOptions.url);
+				$("#httpMethod").text(ajaxOptions.type);
+				$("#divRawOut").text(ajaxOptions.data || "");
+			});
+
+			$(document).ajaxSuccess(function (evt, xhr, ajaxOptions)
+			{
+				$("#rawResult").val(formatJson(xhr.responseText));
+			});
+
+			$(document).ajaxError(function (evt, xhr, options, thrownError)
+			{
+				if (xhr.responseText[0] == '{')
+					$("#rawResult").val(formatJson(xhr.responseText));
+				else
+					$("#rawResult").val(xhr.responseText);
+			});
+
+			$(document).ajaxStart(function ()
+			{
+				$("#divMs").hide();
+				$("#divLoading").show();
+			});
+
+			$(document).ajaxComplete(function (evt, xhr, ajaxOptions)
+			{
+				console.log(xhr);
+				$("#divLoading").fadeOut();
+				$("#divMs").show();
+
+				$("#contentType").text(xhr.getResponseHeader("Content-Type"));
+				$("#statusCode").text(xhr.status + " " + xhr.statusText);
+			});
+		});
+	</script>
+
+	<asp:ContentPlaceHolder ID="head2" runat="server" />
+</asp:Content>
+
+
+<asp:Content ID="Content2" ContentPlaceHolderID="contentBody" runat="server">
+	<div class="bar blue-bar">
+		<div class="title fleft">
+			<asp:ContentPlaceHolder ID="contentExampleTitle" runat="server" />
+		</div>
+
+		<div class="tiny fleft">
+			<a href="javascript:void(0)" style="margin-left: 30px" onclick="$('#notes').slideToggle()">show / hide</a>
+		</div>
+
+		<div id="notes" class="clear">
+			<asp:ContentPlaceHolder ID="contentNotes" runat="server" />
+		</div>
+	</div>
+
+
+	<div class="fleft" style="margin-right: 30px; width: 330px;">
+		<div class="bar blue-bar">
+			<div class="fleft title">Operations</div>
+			<div id="divLoading" class="steel-blue-fg fright" style="display:none">Loading <asp:Image runat="server" ImageUrl="~/Public/images/spinner.gif" AlternateText="" style="vertical-align: middle;" /></div>
+			<div id="divMs" class="fright" style="display:none"></div>
+			<div class="clear"></div>
+			<asp:ContentPlaceHolder ID="contentOperations" runat="server"></asp:ContentPlaceHolder>
+		</div>
+	</div>
+
+	<!-- in/out info and Raw results -->
+	<div class="bar red-bar fright" style="width: 585px">
+		<div class="title">Request</div>
+
+		<div class="fleft lcol">Url</div>
+		<div id="urlOut" class="small code fleft"></div>
+		<div class="clear"></div>
+
+		<div class="fleft lcol">Data sent</div>
+		<div class="fleft">(method = <span id="httpMethod" class="code"></span>)</div>
+		<div class="clear"></div>
+		
+		<div id="divRawOut" class="small code"></div>
+	</div>
+
+	<div class="bar red-bar fright" style="width: 585px;">
+		<div class="title">Response</div>
+		
+		<div class="fleft lcol">Status Code</div>
+		<div id="statusCode" class="small code fleft"></div>
+		<div class="clear"></div>
+
+		<div class="fleft lcol">Content Type</div>
+		<div id="contentType" class="small code fleft"></div>
+		<div class="clear"></div>
+
+		Response Body (<a href="javascript:selectReceived()">select</a>)
+		<br />
+		<textarea id="rawResult" class="code" spellcheck="false" rows="12"></textarea>
+	</div>
+
+	<div class="clear"></div>
+
+	<asp:ContentPlaceHolder ID="contentBottom" runat="server">
+	</asp:ContentPlaceHolder>
+
+	<div class="clear" style="height: 500px"></div>
+
+</asp:Content>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>RestCake</id>
+    <version>$version$</version>
+    <title>RestCake</title>
+    <authors>Samuel Meacham</authors>
+    <owners>Samuel Meacham</owners>
+    <projectUrl>http://rest.codeplex.com</projectUrl>
+    <description>ASP.NET based REST (http) services without WCF (based on IHttpHandler), using Json.NET</description>
+    <copyright>Copyright 2011</copyright>
+    <tags>rest json json.net asp.net</tags>
+  </metadata>
+</package>

@@ -1,0 +1,5 @@
+﻿		public <#= ReturnType #> <#= MethodName #>(<#= MethodArgs #>)
+		{
+			<#= ReturnType #> result = InvokeServiceMethod<<#= ReturnType #>>("<#= MethodUrl #>", <#= IsWrappedRequest #>, <#= IsWrappedResponse #>, Method.<#= HttpVerb #>, <#= Parameters #>);
+			return result;
+		}

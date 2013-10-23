@@ -1,0 +1,12 @@
+﻿Note: This TODO file is very old, who knows.
+
+Should warn the user if a method is a GET method and not all params are in the UriTemplate.
+
+Test enum params for all param passing methods (uri segment, query string, request body json, request body forms encoded)
+
+With jsonp, if the return status code is not 200, I need to make it 200, and add a status: or _status: property to the response that has the actual status code.
+
+clean up all of the methods in RestHttpHandler that actually send a response back to the client. Make all of them hookable (virtual) so there are easy extension points.
+
+
+

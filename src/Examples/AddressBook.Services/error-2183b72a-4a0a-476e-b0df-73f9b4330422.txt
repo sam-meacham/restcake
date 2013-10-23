@@ -1,0 +1,10 @@
+9/23/2011 10:50:32 AM
+Type: RestCake.RestException
+Message: Bad service path ''
+Stack Trace:    at RestCake.RestHttpHandler.ProcessRequest(HttpContext context) in C:\projects\3rdParty\RestCake\RestCake\src\RestCake\RestHttpHandler.cs:line 985
+   at System.Web.HttpApplication.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean& completedSynchronously)
+Source: RestCake
+TargetSite: Void ProcessRequest(System.Web.HttpContext)
+
+--------------------------------------------------------------------------------

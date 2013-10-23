@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AA138DEB-27B9-42DB-B4BC-8AC07EE836C9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RestCake</RootNamespace>
+    <AssemblyName>RestCake</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\AuthorizeAttribute.cs" />
+    <Compile Include="Attributes\JsonNetSettings.cs" />
+    <Compile Include="Attributes\PostAttribute.cs" />
+    <Compile Include="Attributes\DeleteAttribute.cs" />
+    <Compile Include="Attributes\ProducesAttribute.cs" />
+    <Compile Include="Attributes\PutAttribute.cs" />
+    <Compile Include="Attributes\GetAttribute.cs" />
+    <Compile Include="Attributes\VerbAttributeBase.cs" />
+    <Compile Include="AuthRuleStyle.cs" />
+    <Compile Include="AuthRules\SkipAuthorizationRulesConfigSectionHandler.cs" />
+    <Compile Include="BodyStyle.cs" />
+    <Compile Include="Attributes\RestServiceAttribute.cs" />
+    <Compile Include="Clients\ClientWriterBase.cs" />
+    <Compile Include="Clients\ClrClientWriter.cs" />
+    <Compile Include="RequestParameter.cs" />
+    <Compile Include="RequestParameterSource.cs" />
+    <Compile Include="Cake.cs" />
+    <Compile Include="Util\StringUtil.cs" />
+    <EmbeddedResource Include="Clients\RestSharp\RestClient.txt" />
+    <EmbeddedResource Include="Clients\RestSharp\RestSharpClientBase.txt" />
+    <Compile Include="Clients\RestSharpClientWriter.cs" />
+    <Compile Include="Clients\JsClientWriter.cs" />
+    <Compile Include="HttpVerb.cs" />
+    <Compile Include="Metadata\ServiceMetadata.cs" />
+    <Compile Include="RestHttpHandler.cs" />
+    <Compile Include="UrlStyle.cs" />
+    <Compile Include="Util\Constants.cs" />
+    <Compile Include="Util\ReflectionHelper.cs" />
+    <Compile Include="Metadata\MethodMetadata.cs" />
+    <Compile Include="RestValidationException.cs" />
+    <Compile Include="RestCakeModule.cs" />
+    <Compile Include="Routing\GenericHandlerRoute.cs" />
+    <Compile Include="Routing\GenericHandlerRouteHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\RestCakeUtil.cs" />
+    <Compile Include="RestException.cs" />
+    <Compile Include="Routing\RoutedHttpHandler.cs" />
+    <Compile Include="AuthRules\SkipAuthorizationRule.cs" />
+    <Compile Include="AuthRules\SkipAuthorizationRulesConfigSection.cs" />
+    <Compile Include="AuthRules\SkipAuthorizationRulesModule.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clients\Js\service-help-page.html" />
+    <EmbeddedResource Include="Clients\Js\ServiceClient.js" />
+    <EmbeddedResource Include="Clients\Js\ServiceMethod.txt" />
+    <EmbeddedResource Include="Clients\Js\WcfClient.js" />
+    <EmbeddedResource Include="Clients\RestSharp\ServiceMethod.txt" />
+    <EmbeddedResource Include="Clients\RestSharp\ServiceMethodVoid.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clients\ClrPlain\ClrClient.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clients\ClrPlain\ServiceMethodVoid.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clients\ClrPlain\ClrClientBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clients\ClrPlain\ServiceMethod.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clients\Js\ServiceMethod-jqueryFormSerialize.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

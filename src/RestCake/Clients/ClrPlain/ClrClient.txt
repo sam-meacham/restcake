@@ -1,0 +1,14 @@
+namespace <#= Namespace #>
+{
+	using System;
+	using System.Net;
+
+	public class <#= ClientClassName #> : ClrClientBase
+	{
+		public <#= ClientClassName #>(string baseUrl)
+			: base(baseUrl)
+		{ }
+
+<#= ClientServiceMethods #>
+	}
+}

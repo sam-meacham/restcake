@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title><#= ServiceName #> Help Page</title>
+	<style type="text/css">
+		body, table, td, tr
+		{
+			margin: 0px;
+			font: 10pt Helvetica, Sans-Serif;
+		}
+
+		#outer
+		{
+			padding: 30px 100px;
+		}
+
+		#imgLogo
+		{
+			width: 84px;
+			height: 22px;
+			vertical-align: -4px;
+		}
+
+		table, td, th
+		{
+			border: solid 1px #c0c0c0;
+			border-collapse: collapse;
+		}
+
+		.note
+		{
+			color: #999;
+			font-size: 8pt;
+		}
+		
+		.namespace
+		{
+			color: #aaa;
+			font-size: 8pt;
+			display: none;
+		}
+		
+		.param
+		{
+			color: #009900;
+		}
+
+		.code, #tblMethods th, #tblMethods td
+		{
+			font-family: Consolas, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New';
+		}
+
+		.code
+		{
+			background-color: #eee;
+			padding: 2px 8px;
+		}
+	</style>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		function toggleNamespaces()
+		{
+			$(".namespace").toggle();
+		}
+	</script>
+</head>
+
+<body>
+	<div id="outer">
+		<div style="float: left">
+			<h1><#= ServiceNamespace #>.<#= ServiceName #></h1>
+		</div>
+
+		<div style="float: right; margin-top: 23px; text-align: right">
+			A <a href="http://rest.codeplex.com"><img id="imgLogo" border="0" src="data:image/gif;base64,R0lGODlhVAAWAOZ/AN3v9vba2vb7/ebz+B6Wwszn8e2yshGPvma31S2dxoHE3HnA2nO92W2612S21KTU5sbk733C29RJSdbs9NLq88nm8Lne7K/Z6Y/K4IbG3v3+/kGmy5fO4gWJuhaRv1GtzwuMvAmLuwOIuojH3lhecb/ByGVqfESnzJicqO73+ktRZqWosrvf7CKXwnW+2arX6He/2qnX55nP48IAAIuPnczN0+Xm6bK1vfLz9FWv0K3Y6InH33F3h4XG3n6DkorI37/h7bfd60+sz9ja3mC008Hi7vL5+xiSwKvX6LTc6uj0+ZjP4995ecYaGsUODvPLy2K11Mfl8Pvv7zOfx8kfH87o8sTj7/nn55vQ5N1vb7uxvLDa6V2z06HT5aPU5vP5/CSYw5DL4ZPM4c83NxyUwX/D3Lzf7dvu9dJBQTagyD+lyqbV56fW58cWFsgXF354jfjj42q51oTF3ZGQo0qqzXC82AyNvJrP49t8fb3g7ZTN4vv9/qjW5z5FWwCHuf///yH5BAEAAH8ALAAAAABUABYAAAf/gH+Cg4SFhoeIiYqLBgGLj5CRkpN/WUyUmJmaiRKbnp+RBk9wjqCmp4IDeDMSY1eDSgUFFHUbDGeouYs6b04zbjNjOgpEO0B6dDkKYD+6hwAILX4HI4cjfn6RaXNUM95oUB1/FHwAOw5kfguJJH3uJiiaMtj01YbX2Ys/RxAWWk1t0EjZoQbClgYNDmAjAyRRHxMlSvjoQwPSChODACg8wOIPgBTWsD1isKFIlR5C2BgZIcYMBhgdsBFAouSLQxKDTKiA1G4QDGwdB404gS1HgT/4kGKTgVQhApARgkSJ82ODEAVeoiCgR+bCHyB+HNwcRAInDh8qVFT8g6KdiXbu/3ASbVHoxAG701LgS6Ewh9ID0hD8cRFD0B4NfwZ8oOehyJ81MdWN/bOiTzwTEFeoQFHCcgkUNUz0KVHjD7YThViAfIHtBb5rB1KkaM1i2uDChCxgS0BBwxI72EKUGeDQnbsVfzoPEUSDBIo+pQX1FHTaEADX2Ebgk8aUdT5sBQgXenCEuJzIB7pM4HLHIcQbaXE8N+7Ohoo+PJZP/yONLqGf9PihXYCC4RMgC+IVMkAGIGBzxAVW9KDQOoj0gRNlfazwXEQc/iFfWjbst5UfQf1Rm4CmCYjPFNgAgM8JMJ4QHm6DTEBPAjokgYFC2DwwmQ34dXbDIUC21ccgJ3L0h6te2MiWHT4AYINAAUsJAlKCgyThRwIcQMCBCNiA0IARiliYE046rVDCCjfcoOaGNGQYHYD1YNMCjwNmMyIARNHjlwtIFFLBAgBEQI8IFC5iJnPQnXWfCW6K5twfNojGwyAv5KBQCzKMcMABMBCVp4mnpYDARjD8wcAahQhARID2OCPrIUF8UEgewTE1666HWNAAA1hcAMFWSwjA67GGFBBBD2FgoMAEyEaLSiAAOw==" alt="RestCake" /></a>service.
+			<div class="note"><#= RestCakeVersion #></div>
+		</div>
+
+		<div style="clear: both"></div>
+
+		<div style="float: left">
+			<h2>Methods</h2>
+		</div>
+
+		<div style="position: relative; width: 100%; height: 100%; float: right">
+			<div style="position: absolute; right: 0; bottom: 0" class="note">
+				<a href="javascript:toggleNamespaces()">show/hide namespaces</a>
+			</div>
+		</div>
+
+
+		<div style="clear: both"></div>
+
+		<table id="tblMethods" cellpadding="5" cellspacing="0" border="0">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Verb</th>
+					<th>UriTemplate</th>
+					<th>Signature</th>
+					<th>Returns</th>
+					<th>Javascript Client Signature</th>
+				</tr>
+			</thead>
+			<tbody>
+<#= MethodRows #>
+			</tbody>
+		</table>
+
+		<br />
+
+		<h2>Javascript</h2>
+
+		<div>
+			RestCake services can dynamically create javascript clients for you.  You just have to include the <span class="code">&lt;script&gt;</span> tag, and then create an instance of the client.
+			<ul>
+				<li>
+					<a href="<#= ServiceBaseUrl #>_js?jquery&base=true">JavaScript jQuery client</a> (includes base proxy class)
+				</li>
+				<li>
+					<a href="<#= ServiceBaseUrl #>_js?jquery&base=false">JavaScript jQuery client</a> (no base proxy class))
+				</li>
+			</ul>
+
+			<br />
+			<br />
+
+			Example:
+			<pre class="code">
+&lt;!-- include the js client --&lt;
+&lt;script type="text/javascript" src="<#= ServiceBaseUrl #>_js?jquery&amp;base=true"&gt;&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
+	// Create a new instance of the js client
+	var g_svc = new <#= ServiceNamespace #>.<#= ServiceName #>Client("<#= ServiceBaseUrl #>");
+
+	function foo()
+	{
+		// Call a service method using the js client
+		g_svc.someServiceMethod(arg1, arg2, arg3, function(result)
+		{
+			// Success! Do something with result...
+		});
+	}
+&lt;/script&gt;
+			</pre>
+
+			<br />
+
+			Javascript success callback signature:
+			<br />
+			<div class="code">function(result, userContext, textStatus, xhr|jqXhr)</div>
+
+			<br />
+
+			Javascript error callback signature:
+			<div class="code">function(restException, userContext, xhr|jqXhr, textStatus, errorThrown, contentType)</div>
+
+			<div class="note">
+				The <span class="code">xhr|jqXhr</span> depends on your version of jQuery.  It's xhr pre 1.5, jqXhr for 1.5+.  RestCake is just passing along some of the args that jquery returns.
+			</div>
+		</div>
+
+		<br />
+
+		<div>
+<#= AdditionalContent #>
+		</div>
+
+		<br />
+
+		<h2>Other Services</h2>
+<#= OtherServices #>
+
+	</div>
+
+</body>
+</html>
+

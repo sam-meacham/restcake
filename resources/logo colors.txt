@@ -1,0 +1,3 @@
+Dim steel blue/gray: #3e455b
+Light blue: #0087b9
+Cherry red: #c20000

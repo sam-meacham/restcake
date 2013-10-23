@@ -1,0 +1,9 @@
+﻿		public RestResponse<object> <#= MethodName #>(<#= MethodArgs #>Action<HttpWebRequest> beforeRequest)
+		{
+			string verb = "<#= Verb #>";
+			string url = <#= Url #>;
+			string body = <#= Body #>;
+
+			RestResponse<object> response = Request<object>(verb, url, body, beforeRequest);
+			return response;
+		}
