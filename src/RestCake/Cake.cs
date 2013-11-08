@@ -4,7 +4,6 @@ using System.Text;
 using System.Web;
 using RestCake.Metadata;
 
-
 namespace RestCake
 {
 	public static class Cake
@@ -13,10 +12,6 @@ namespace RestCake
 		/// Every RestHttpHandler service in the current AppDomain. This is populated from <see cref="RestCakeModule.Init" />.
 		/// </summary>
 		public static readonly Dictionary<Type, ServiceMetadata> Services = new Dictionary<Type, ServiceMetadata>();
-
-		public static bool IsInitialized = false;
-
-		public static readonly object s_objSync = new object();
 
 		/// <summary>
 		/// This can optionally be set from somewhere like Application_Start(). If this has a value, it will be appended to any js includes
@@ -52,6 +47,5 @@ namespace RestCake
 			sb.Append("\"></script>");
 			return sb.ToString();
 		}
-
 	}
 }

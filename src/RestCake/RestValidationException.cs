@@ -2,13 +2,12 @@ using System;
 using System.Net;
 using Newtonsoft.Json;
 
-
 namespace RestCake
 {
 	[JsonObject(MemberSerialization = MemberSerialization.OptIn)]
 	public class RestValidationException : RestException
 	{
-		private bool m_isRestValidationException = true;
+		private readonly bool m_isRestValidationException = true;
 
 		public RestValidationException(string message)
 			: base(message)

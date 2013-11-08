@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-
 namespace RestCake.Util
 {
 	internal static class ReflectionHelper
