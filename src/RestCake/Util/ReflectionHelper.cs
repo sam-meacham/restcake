@@ -16,6 +16,11 @@ namespace RestCake.Util
 			return Activator.CreateInstance(specificType, args);
 		}
 
+		public static bool HasAttribute<T>(this Type type) where T : Attribute
+		{
+			return type.GetCustomAttributes(typeof(T), inherit: true).Length > 0;
+		}
+
 		public static IEnumerable<Type> GetTypesWithAttribute(Assembly assembly, Type attributeType)
 		{
 			return assembly.GetTypes().Where(type => type.GetCustomAttributes(attributeType, true).Length > 0);
@@ -58,10 +63,10 @@ namespace RestCake.Util
 		}
 
 
-		public static T GetAttribute<T>(Type @class)
+		public static T GetAttribute<T>(Type type)
 			where T : Attribute
 		{
-			T[] attribs = (T[])@class.GetCustomAttributes(typeof(T), true);
+			T[] attribs = (T[])type.GetCustomAttributes(typeof(T), true);
 			return attribs.SingleOrDefault();
 		}
 
