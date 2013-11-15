@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
 using minirack;
@@ -13,24 +16,48 @@ namespace RestCake
 	/// minirack attributes will dynamically register modules and call startup code
 	/// </summary>
 	[Pipeline]
+	[PostAppStart]
 	internal class RestCakeModule : IHttpModule
 	{
-		//private static readonly string s_logfile = "_restcake-log.txt";
+		private static readonly string s_logfilename = "_restcake-log.txt";
+		private static readonly string s_logfiledir;
+
+		// static constructor
+		static RestCakeModule()
+		{
+			string asmpath = Assembly.GetExecutingAssembly().CodeBase;
+			// file:\ or file:/, with 1 or more slashes
+			Regex rx = new Regex(@"^file:[\/]+");
+			asmpath = rx.Replace(asmpath, "");
+			s_logfiledir = asmpath;
+		}
 
 		public void Dispose()
 		{ }
 
 		public void Init(HttpApplication context)
 		{
+			log("RestCakeModule.Init()");
 			context.AuthenticateRequest += context_AuthenticateRequest;
+
+			// TODO: URGENT: This is causing YSODs after about 30 minutes.  Init() is being called again and this
+			// tries to add routes again. Need to make sure this only runs once.
+			//populateServiceTypes();
+			//setupRoutes();
+		}
+
+		public static void PostAppStart()
+		{
+			log("RestCakeModule.PostAppStart()");
 			populateServiceTypes();
 			setupRoutes();
 		}
 
-//		private static void log(string msg)
-//		{
-//			File.AppendAllText(s_logfile, msg + "\r\n");
-//		}
+		private static void log(string msg)
+		{
+			string path = Path.Combine(s_logfiledir, s_logfilename);
+			File.AppendAllText(path, DateTime.Now + ": " + msg + "\r\n");
+		}
 
 		private static void populateServiceTypes()
 		{
