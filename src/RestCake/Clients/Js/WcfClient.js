@@ -171,7 +171,9 @@ window.RestCake.Timeout = 60000;
 				{
 					// Let's see if they're being redirected...(login page?)
 					var locHeader = xhr.getResponseHeader("Location");
-					if (locHeader != null)
+					// sam meacham, 11/14/2013 - locHeader is an empty string in some IEs (9), and we're checking for null only here.
+					// Updating to use "falsy" values (uhhg - can't wait till we're all in TypeScript...).
+					if (locHeader)
 						alert("The ajax request to the server is returning a Location header, trying to redirect you.");
 
 					if (!errorCallback) return;
