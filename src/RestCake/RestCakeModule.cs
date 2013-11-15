@@ -29,7 +29,7 @@ namespace RestCake
 			// file:\ or file:/, with 1 or more slashes
 			Regex rx = new Regex(@"^file:[\/]+");
 			asmpath = rx.Replace(asmpath, "");
-			s_logfiledir = asmpath;
+			s_logfiledir = Path.GetDirectoryName(asmpath);
 		}
 
 		public void Dispose()
