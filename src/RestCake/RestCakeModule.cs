@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -30,6 +31,10 @@ namespace RestCake
 			Regex rx = new Regex(@"^file:[\/]+");
 			asmpath = rx.Replace(asmpath, "");
 			s_logfiledir = Path.GetDirectoryName(asmpath);
+			Debug.Assert(s_logfiledir != null);
+			DirectoryInfo info = new DirectoryInfo(s_logfiledir);
+			Debug.Assert(info != null && info.Parent != null);
+			s_logfiledir = info.Parent.FullName;
 		}
 
 		public void Dispose()
