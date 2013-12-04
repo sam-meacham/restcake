@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+	<metadata>
+		<id>RestCake</id>
+		<version>1.5.3</version>
+		<authors>Sam Meacham</authors>
+		<owners>Sam Meacham</owners>
+		<summary>Easy rest/http services w/ auto jquery clients</summary>
+		<description>Easy attribute configuration for services, no entries required in web.config, json.net for serialization, good extension points, built in help docs and dynamic jquery clients, up and running fast</description>
+		<language>en-US</language>
+		<projectUrl>https://github.com/sam-meacham/restcake</projectUrl>
+		<licenseUrl>https://github.com/sam-meacham/restcake/blob/master/LICENSE</licenseUrl>
+		<iconUrl>http://maps.cbre.com/jquery/images/restcakelogo.png</iconUrl>
+		<tags>rest restcake http ajax jquery routing routes</tags>
+
+		<dependencies>
+			<group targetFramework=".NETFramework4.5.1">
+				<!-- LAM Dependencies -->
+				<dependency id="sam.minirack" version="1.0.2" />
+
+				<!-- public MS dependencies -->
+				<dependency id="Microsoft.Web.Infrastructure" version="1.0.0" />
+
+				<!-- 3rd party dependencies -->
+				<dependency id="WebActivatorEx" version="2.0.3" />
+				<dependency id="Newtonsoft.Json" version="5.0.8" />
+			</group>
+		</dependencies>
+
+		<frameworkAssemblies>
+			<frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.5.1" />
+			<frameworkAssembly assemblyName="System.Configuration" targetFramework=".NETFramework4.5.1" />
+			<frameworkAssembly assemblyName="System.Core" targetFramework=".NETFramework4.5.1" />
+			<frameworkAssembly assemblyName="System.ServiceModel" targetFramework=".NETFramework4.5.1" />
+			<frameworkAssembly assemblyName="System.Web" targetFramework=".NETFramework4.5.1" />
+			<frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.5.1" />
+			<frameworkAssembly assemblyName="System.Xml.Linq" targetFramework=".NETFramework4.5.1" />
+		</frameworkAssemblies>
+	</metadata>
+</package>
+
