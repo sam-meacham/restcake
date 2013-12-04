@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Text;
 using System.Web;
 using RestCake.Metadata;
-
 
 namespace RestCake
 {
@@ -12,11 +11,7 @@ namespace RestCake
 		/// <summary>
 		/// Every RestHttpHandler service in the current AppDomain. This is populated from <see cref="RestCakeModule.Init" />.
 		/// </summary>
-		public static readonly Dictionary<Type, ServiceMetadata> Services = new Dictionary<Type, ServiceMetadata>();
-
-		public static bool IsInitialized = false;
-
-		public static readonly object s_objSync = new object();
+		public static readonly ConcurrentDictionary<Type, ServiceMetadata> Services = new ConcurrentDictionary<Type, ServiceMetadata>();
 
 		/// <summary>
 		/// This can optionally be set from somewhere like Application_Start(). If this has a value, it will be appended to any js includes
@@ -24,7 +19,7 @@ namespace RestCake
 		/// </summary>
 		public static string ScriptVersionString { get; set; }
 
-		public static string JqueryClientScript<T>(bool includeBase = false, string clientVarName = null) where T : RestHttpHandler
+		public static string JqueryClientScript<T>(bool includeBase = false, string clientVarName = null) where T : RestCakeHandler
 		{
 			string appPath = HttpContext.Current.Request.ApplicationPath;
 			if (appPath == null)
@@ -52,6 +47,5 @@ namespace RestCake
 			sb.Append("\"></script>");
 			return sb.ToString();
 		}
-
 	}
 }

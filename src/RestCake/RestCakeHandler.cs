@@ -17,10 +17,9 @@ using RestCake.Metadata;
 using RestCake.Routing;
 using RestCake.Util;
 
-
 namespace RestCake
 {
-	public abstract class RestHttpHandler : RoutedHttpHandler
+	public abstract class RestCakeHandler : RoutedHttpHandler
 	{
 		private static readonly string VERSION = "RestCake v1.4.0";
 
@@ -117,7 +116,7 @@ namespace RestCake
 		}
 
 		// constructor
-		protected RestHttpHandler()
+		protected RestCakeHandler()
 		{
 			ThisType = GetType();
 		}
@@ -540,7 +539,7 @@ namespace RestCake
 		// This static method just calls the instance method
 		private static void returnHelpPage(Match match, Type type, string everythingAfterRouteUrl, HttpContext context)
 		{
-			((RestHttpHandler)context.CurrentHandler).returnHelpPage();
+			((RestCakeHandler)context.CurrentHandler).returnHelpPage();
 		}
 
 

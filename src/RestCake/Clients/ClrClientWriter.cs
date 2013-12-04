@@ -47,7 +47,7 @@ namespace RestCake.Clients
 			return argsList;
 		}
 
-		private string getParamAsUrlValue(ParameterInfo param)
+		private static string getParamAsUrlValue(ParameterInfo param)
 		{
 			Type t = param.ParameterType;
 			if (t.IsPrimitive || t.FullName == "System.String")
@@ -67,9 +67,8 @@ namespace RestCake.Clients
 			bool startsInString = true;
 
 			// Query string params
-			for (int i = 0; i < urlParams.Length; i++)
+			foreach (ParameterInfo param in urlParams)
 			{
-				ParameterInfo param = urlParams[i];
 				// search example: name={name} (two curly braces is a literal curly brace in a format string)
 				string search = String.Format("{0}={{{0}}}", param.Name);
 				string replace = String.Format("{0}=\" + {1} + \"", param.Name, getParamAsUrlValue(param));

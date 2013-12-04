@@ -1,53 +1,86 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
-using System.Linq;
 using System.Web.Routing;
+using minirack;
 using RestCake.Metadata;
 using RestCake.Routing;
 using RestCake.Util;
 
-
 namespace RestCake
 {
-	public class RestCakeModule : IHttpModule
+	/// <summary>
+	/// minirack attributes will dynamically register modules and call startup code
+	/// </summary>
+	[Pipeline]
+	[PostAppStart]
+	internal class RestCakeModule : IHttpModule
 	{
+		private static readonly string s_logfilename = "_restcake-log.txt";
+		private static readonly string s_logfiledir;
+
+		// static constructor
+		static RestCakeModule()
+		{
+			string asmpath = Assembly.GetExecutingAssembly().CodeBase;
+			// file:\ or file:/, with 1 or more slashes
+			Regex rx = new Regex(@"^file:[\/]+");
+			asmpath = rx.Replace(asmpath, "");
+			s_logfiledir = Path.GetDirectoryName(asmpath);
+			Debug.Assert(s_logfiledir != null);
+			DirectoryInfo info = new DirectoryInfo(s_logfiledir);
+			Debug.Assert(info != null && info.Parent != null);
+			s_logfiledir = info.Parent.FullName;
+		}
+
 		public void Dispose()
 		{ }
 
-
 		public void Init(HttpApplication context)
 		{
+			log("RestCakeModule.Init()");
 			context.AuthenticateRequest += context_AuthenticateRequest;
 
-			if (!Cake.IsInitialized)
-			{
-				lock(Cake.s_objSync)
-				{
-					if (!Cake.IsInitialized)
-					{
-						populateServiceTypes();
-						setupRoutes();
-						Cake.IsInitialized = true;
-					}
-				}
-			}
+			// TODO: URGENT: This is causing YSODs after about 30 minutes.  Init() is being called again and this
+			// tries to add routes again. Need to make sure this only runs once.
+			//populateServiceTypes();
+			//setupRoutes();
+		}
+
+		public static void PostAppStart()
+		{
+			log("RestCakeModule.PostAppStart()");
+			populateServiceTypes();
+			setupRoutes();
+		}
+
+		private static void log(string msg)
+		{
+			string path = Path.Combine(s_logfiledir, s_logfilename);
+			File.AppendAllText(path, DateTime.Now + ": " + msg + "\r\n");
 		}
 
 		private static void populateServiceTypes()
 		{
-			// Get every assembly in the current AppDomain that isn't an obvious MS assembly.
-			List<Assembly> assemblies = AppDomain.CurrentDomain
-				.GetAssemblies()
-				.Where(asm => !asm.FullName.StartsWith("mscorlib") && !asm.FullName.StartsWith("System.") && !asm.FullName.StartsWith("Microsoft"))
-				.ToList();
-			// In each of those assemblies, find all classes that have a [RestService] attribute.
-			foreach (Assembly asm in assemblies)
+			// Get all classes that have a [RestService] attribute.
+			Type[] serviceTypes = PipelineInstaller.GetUserTypes(t => t.HasAttribute<RestServiceAttribute>());
+			foreach (Type serviceType in serviceTypes)
 			{
-				IEnumerable<Type> serviceTypes = ReflectionHelper.GetTypesWithAttribute(asm, typeof(RestServiceAttribute));
-				foreach (Type serviceType in serviceTypes)
-					Cake.Services.Add(serviceType, new ServiceMetadata(serviceType));
+				if (!typeof (RestCakeHandler).IsAssignableFrom(serviceType))
+					throw new Exception("A [RestService] class must subclass RestCake.RestHttpHandler");
+				// TODO: I don't know why it's getting registered multiple times...
+				if (Cake.Services.ContainsKey(serviceType))
+					continue;
+				if (!Cake.Services.TryAdd(serviceType, new ServiceMetadata(serviceType)))
+				{
+					if (Cake.Services.ContainsKey(serviceType))
+						throw new Exception("The service type has already been added.");
+					throw new Exception("Could not add service " + serviceType.FullName);
+				}
 			}
 		}
 
@@ -82,7 +115,7 @@ namespace RestCake
 				string serviceRoute = "~/" + service.Value.Route.ToLower();
 				if (requestRelPath.StartsWith(serviceRoute))
 				{
-					RestHttpHandler.FormsAuthOrRedirectMessage(app.Context);
+					RestCakeHandler.FormsAuthOrRedirectMessage(app.Context);
 					break;
 				}
 			}

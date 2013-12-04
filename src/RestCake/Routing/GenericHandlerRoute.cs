@@ -5,10 +5,9 @@ using System.Web.Routing;
 
 namespace RestCake.Routing
 {
+	// For info on subclassing RouteBase, check Pro Asp.NET MVC Framework, page 252.
+	// Google books link: http://books.google.com/books?id=tD3FfFcnJxYC&pg=PA251&lpg=PA251&dq=.net+RouteBase&source=bl&ots=IQhFwmGOVw&sig=0TgcFFgWyFRVpXgfGY1dIUc0VX4&hl=en&ei=z61UTMKwF4aWsgPHs7XbAg&sa=X&oi=book_result&ct=result&resnum=6&ved=0CC4Q6AEwBQ#v=onepage&q=.net%20RouteBase&f=false
 	/// <summary>
-	/// For info on subclassing RouteBase, check Pro Asp.NET MVC Framework, page 252.
-	/// Google books link: http://books.google.com/books?id=tD3FfFcnJxYC&pg=PA251&lpg=PA251&dq=.net+RouteBase&source=bl&ots=IQhFwmGOVw&sig=0TgcFFgWyFRVpXgfGY1dIUc0VX4&hl=en&ei=z61UTMKwF4aWsgPHs7XbAg&sa=X&oi=book_result&ct=result&resnum=6&ved=0CC4Q6AEwBQ#v=onepage&q=.net%20RouteBase&f=false
-	/// 
 	/// It explains how the asp.net runtime will call GetRouteData() for every route in the route table.
 	/// GetRouteData() is used for inbound url matching, and should return null for a negative match (the current requests url doesn't match the route).
 	/// If it does match, it returns a RouteData object describing the handler that should be used for that request, along with any data values (stored in RouteData.Values) that

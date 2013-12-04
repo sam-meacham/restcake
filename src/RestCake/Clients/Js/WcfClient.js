@@ -126,10 +126,10 @@ window.RestCake.Timeout = 60000;
 
 		this._serviceUrl = serviceUrl;
 
-		this.invoke = function (method, httpVerb, data, successCallback, errorCallback, userContext, isWrappedResponse, isJsonp)
+		this.invoke = function(method, httpVerb, data, successCallback, errorCallback, userContext, isWrappedResponse, isJsonp)
 		{
 			userContext = userContext || null;
-				
+
 			// Every call that comes through here is set up for "application/json", so even single string args, etc, need to be wrapped in quotes.
 			if (data != null && data != "")
 				data = JSON.stringify(data);
@@ -148,7 +148,7 @@ window.RestCake.Timeout = 60000;
 				timeout: window.RestCake.Timeout,
 				dataType: isJsonp ? "jsonp" : "json",
 				userContext: userContext,
-				success: function (data, textStatus, xhr)
+				success: function(data, textStatus, xhr)
 				{
 					if (!successCallback)
 						return;
@@ -167,7 +167,7 @@ window.RestCake.Timeout = 60000;
 						break;
 					}
 				},
-				error: function (xhr, textStatus, errorThrown)
+				error: function(xhr, textStatus, errorThrown)
 				{
 					// Let's see if they're being redirected...(login page?)
 					var locHeader = xhr.getResponseHeader("Location");
@@ -175,9 +175,9 @@ window.RestCake.Timeout = 60000;
 					// Updating to use "falsy" values (uhhg - can't wait till we're all in TypeScript...).
 					if (locHeader)
 						alert("The ajax request to the server is returning a Location header, trying to redirect you.");
-					
+
 					if (!errorCallback) return;
-					
+
 					var contentType = "";
 					var responseHeader = xhr.getResponseHeader("Content-Type");
 					if (responseHeader)
@@ -186,7 +186,7 @@ window.RestCake.Timeout = 60000;
 					var isXml = false;
 					var isHtml = false;
 					var isJson = false;
-					
+
 					if (contentType.indexOf("text/xml") > -1)
 						isXml = true;
 					else if (contentType.indexOf("text/html") > -1)
@@ -231,7 +231,7 @@ window.RestCake.Timeout = 60000;
 
 			var thexhr = $.ajax(options);
 			return thexhr;
-		} // end invoke()
+		}; // end invoke()
 
 	}; // end class
 

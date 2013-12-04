@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-
 namespace RestCake.Util
 {
 	internal static class ReflectionHelper
@@ -15,6 +14,11 @@ namespace RestCake.Util
 		{
 			Type specificType = generic.MakeGenericType(new [] { innerType });
 			return Activator.CreateInstance(specificType, args);
+		}
+
+		public static bool HasAttribute<T>(this Type type) where T : Attribute
+		{
+			return type.GetCustomAttributes(typeof(T), inherit: true).Length > 0;
 		}
 
 		public static IEnumerable<Type> GetTypesWithAttribute(Assembly assembly, Type attributeType)
@@ -59,10 +63,10 @@ namespace RestCake.Util
 		}
 
 
-		public static T GetAttribute<T>(Type @class)
+		public static T GetAttribute<T>(Type type)
 			where T : Attribute
 		{
-			T[] attribs = (T[])@class.GetCustomAttributes(typeof(T), true);
+			T[] attribs = (T[])type.GetCustomAttributes(typeof(T), true);
 			return attribs.SingleOrDefault();
 		}
 
