@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -22,6 +23,9 @@ namespace RestCake
 	{
 		private static readonly string s_logfilename = "_restcake-log.txt";
 		private static readonly string s_logfiledir;
+		private static readonly bool s_isLogging;
+		// used only to ensure file-writes are serial/threadsafe in log()
+		private static readonly object s_logsync = new object();
 
 		// static constructor
 		static RestCakeModule()
@@ -35,6 +39,11 @@ namespace RestCake
 			DirectoryInfo info = new DirectoryInfo(s_logfiledir);
 			Debug.Assert(info != null && info.Parent != null);
 			s_logfiledir = info.Parent.FullName;
+
+			// see if we're logging
+			string strIsLogging = ConfigurationManager.AppSettings["RestCake.IsLogging"];
+			if (String.Equals(strIsLogging, "true", StringComparison.OrdinalIgnoreCase))
+				s_isLogging = true;
 		}
 
 		public void Dispose()
@@ -60,8 +69,13 @@ namespace RestCake
 
 		private static void log(string msg)
 		{
+			if (!s_isLogging)
+				return;
 			string path = Path.Combine(s_logfiledir, s_logfilename);
-			File.AppendAllText(path, DateTime.Now + ": " + msg + "\r\n");
+			lock (s_logsync)
+			{
+				File.AppendAllText(path, DateTime.Now + ": " + msg + "\r\n");
+			}
 		}
 
 		private static void populateServiceTypes()
