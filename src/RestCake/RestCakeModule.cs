@@ -1,10 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Routing;
 using minirack;
@@ -21,61 +16,18 @@ namespace RestCake
 	[PostAppStart]
 	internal class RestCakeModule : IHttpModule
 	{
-		private static readonly string s_logfilename = "_restcake-log.txt";
-		private static readonly string s_logfiledir;
-		private static readonly bool s_isLogging;
-		// used only to ensure file-writes are serial/threadsafe in log()
-		private static readonly object s_logsync = new object();
-
-		// static constructor
-		static RestCakeModule()
-		{
-			string asmpath = Assembly.GetExecutingAssembly().CodeBase;
-			// file:\ or file:/, with 1 or more slashes
-			Regex rx = new Regex(@"^file:[\/]+");
-			asmpath = rx.Replace(asmpath, "");
-			s_logfiledir = Path.GetDirectoryName(asmpath);
-			Debug.Assert(s_logfiledir != null);
-			DirectoryInfo info = new DirectoryInfo(s_logfiledir);
-			Debug.Assert(info != null && info.Parent != null);
-			s_logfiledir = info.Parent.FullName;
-
-			// see if we're logging
-			string strIsLogging = ConfigurationManager.AppSettings["RestCake.IsLogging"];
-			if (String.Equals(strIsLogging, "true", StringComparison.OrdinalIgnoreCase))
-				s_isLogging = true;
-		}
-
 		public void Dispose()
 		{ }
 
 		public void Init(HttpApplication context)
 		{
-			log("RestCakeModule.Init()");
 			context.AuthenticateRequest += context_AuthenticateRequest;
-
-			// TODO: URGENT: This is causing YSODs after about 30 minutes.  Init() is being called again and this
-			// tries to add routes again. Need to make sure this only runs once.
-			//populateServiceTypes();
-			//setupRoutes();
 		}
 
 		public static void PostAppStart()
 		{
-			log("RestCakeModule.PostAppStart()");
 			populateServiceTypes();
 			setupRoutes();
-		}
-
-		private static void log(string msg)
-		{
-			if (!s_isLogging)
-				return;
-			string path = Path.Combine(s_logfiledir, s_logfilename);
-			lock (s_logsync)
-			{
-				File.AppendAllText(path, DateTime.Now + ": " + msg + "\r\n");
-			}
 		}
 
 		private static void populateServiceTypes()
