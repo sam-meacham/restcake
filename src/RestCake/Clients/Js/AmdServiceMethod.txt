@@ -1,0 +1,27 @@
+﻿		this.$$MethodName$$jsonp = function ($$MethodArgssuccessCallback, errorCallback, userContext)
+		{
+			// validate that they passed in the correct number of params
+			// (if any of the params are "functions", then they have too few, and we're trying to serialize the success callback...)
+			var methodParamNames = "$$MethodArgs".split(",");
+			var i, paramName;
+			for(i = 0; i < methodParamNames.length; i++)
+			{
+				paramName = $.trim(methodParamNames[i]);
+				if (paramName == "")
+					continue;
+				if (typeof arguments[i] == "function")
+				{
+					alert("You are passing the wrong number of parameters to your $$MethodName service method.\n"
+						+ "args you need: $$MethodArgs"
+					);
+					// don't do the service call
+					return;
+				}
+			}
+
+			userContext = userContext || null;
+			errorCallback = errorCallback || self.defaultErrorHandler("$$DefaultErrorMessage");
+			var dataArg = $$DataArg;
+			var xhr = this._client.invoke($$MethodUrl, "$$HttpVerb", dataArg, successCallback, errorCallback, userContext, $$IsWrappedResponse, $$isJsonp);
+			return xhr;
+		};

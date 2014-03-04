@@ -1,0 +1,26 @@
+﻿		this.$$MethodName$$jsonp_fromForm = function (formID, successCallback, errorCallback, intParamDefaults, floatParamDefaults, argsValidationCallback, userContext)
+		{
+			// Get the args from the form
+			var paramNames = [$$ParamNames];
+			var intParams = [$$IntParams];
+			intParamDefaults = intParamDefaults || [$$IntParamDefaults];
+			var floatParams = [$$FloatParams];
+			floatParamDefaults = floatParamDefaults || [$$FloatParamDefaults];
+			var args = RestCake.getArgsFromForm(formID, intParams, intParamDefaults, floatParams, floatParamDefaults);
+			var arArgs = RestCake.getOrderedArgsArray(args, paramNames);
+
+			var valid = true;
+			if (typeof(argsValidationCallback) === "function")
+				valid = argsValidationCallback(arArgs, args);
+
+			if (!valid)
+				return null;
+
+			// push the callbacks onto the args array
+			arArgs.push(successCallback);
+			arArgs.push(errorCallback);
+			arArgs.push(userContext);
+
+			// call the normal method
+			return this.$$MethodName.apply(this, arArgs);
+		};

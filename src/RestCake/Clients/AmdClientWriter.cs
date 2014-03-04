@@ -47,7 +47,7 @@ namespace RestCake.Clients
 
 		private static string getMethodBody_jqueryFormSerialize(MethodMetadata method)
 		{
-			string serviceMethodTemplate = ReflectionHelper.GetTemplateContents("Js.ServiceMethod-jqueryFormSerialize.txt");
+			string serviceMethodTemplate = ReflectionHelper.GetTemplateContents("Js.AmdServiceMethod-jqueryFormSerialize.txt");
 
 			string[] paramNames = method.GetParamNames();
 			string strParamNames = "";
@@ -99,7 +99,7 @@ namespace RestCake.Clients
 
 		private static string getMethodBody(MethodMetadata method)
 		{
-			string serviceMethodTemplate = ReflectionHelper.GetTemplateContents("Js.ServiceMethod.txt");
+			string serviceMethodTemplate = ReflectionHelper.GetTemplateContents("Js.AmdServiceMethod.txt");
 			string dataArg = "null";
 
 			// The template works "as-is" with HTTP GET.  For the other verbs (PUT, POST, DELETE), we have to modify the dataArg value.
