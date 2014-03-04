@@ -12,7 +12,7 @@ namespace RestCake
 	/// This attribute can be placed on a rest service class or method to specify the Json.NET serialization settings that are
 	/// to be used for that entire class or that specific method.  You can have default settings for a whole class, and then specific settings
 	/// for a particular method if needed.
-	/// If you need to specify more advanced settings, you may want to override RestHttpHandler.GetSerializer() in your service class.
+	/// If you need to specify more advanced settings, you may want to override RestCakeHandler.GetSerializer() in your service class.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 	public class JsonNetSettings : Attribute

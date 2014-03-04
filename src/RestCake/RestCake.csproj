@@ -84,6 +84,7 @@
     <Compile Include="Attributes\RestServiceAttribute.cs" />
     <Compile Include="Clients\ClientWriterBase.cs" />
     <Compile Include="Clients\ClrClientWriter.cs" />
+    <Compile Include="Clients\AmdClientWriter.cs" />
     <Compile Include="RequestParameter.cs" />
     <Compile Include="RequestParameterSource.cs" />
     <Compile Include="Cake.cs" />
@@ -136,6 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clients\Js\AmdClient.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
