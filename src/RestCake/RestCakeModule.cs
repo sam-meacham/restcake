@@ -37,7 +37,7 @@ namespace RestCake
 			foreach (Type serviceType in serviceTypes)
 			{
 				if (!typeof (RestCakeHandler).IsAssignableFrom(serviceType))
-					throw new Exception("A [RestService] class must subclass RestCake.RestHttpHandler");
+					throw new Exception("A [RestService] class must subclass RestCake.RestCakeHandler");
 				// TODO: I don't know why it's getting registered multiple times...
 				if (Cake.Services.ContainsKey(serviceType))
 					continue;
@@ -66,8 +66,8 @@ namespace RestCake
 		{
 			HttpApplication app = (HttpApplication)sender;
 
-			// Detect expired forms auth (only apply to RestHttpHandler requests)
-			// NOTE: It would be nice to simply use app.Context.Handler, to see if it's a RestHttpHandler,
+			// Detect expired forms auth (only apply to RestCakeHandler requests)
+			// NOTE: It would be nice to simply use app.Context.Handler, to see if it's a RestCakeHandler,
 			// but it hasn't been determined yet.
 
 			// this gets the "~/..." style path to the handler being requested

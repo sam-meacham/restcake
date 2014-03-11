@@ -3,7 +3,7 @@
 namespace RestCake
 {
 	/// <summary>
-	/// The base class for the http verb attribute classes that are placed on methods in a RestHttpHandler (a service class) to expose those methods over http.
+	/// The base class for the http verb attribute classes that are placed on methods in a RestCakeHandler (a service class) to expose those methods over http.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Method)]
 	public abstract class VerbAttributeBase : Attribute

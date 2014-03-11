@@ -181,7 +181,11 @@ namespace RestCake
 
 				// Set up a "regex backdoor" for the js and clr clients, and the help page
 				s_regexOverrides[type] = new Dictionary<Regex, Action<Match, Type, string, HttpContext>>();
+				// new amd module (requirejs, etc) friendly one for LamLoader
+				s_regexOverrides[type][new Regex(@"^/_js\?type=amd.*$")] = returnAmdClientDefinition;
+
 				s_regexOverrides[type][new Regex(@"^/_js\?(?<type>\w+).*$")] = returnJsClientDefinition;
+
 				s_regexOverrides[type][new Regex(@"^/_cs\?type=(?<type>\w+)&namespace=(?<namespace>\w+)$")] = returnClrClientDefinition;
 				s_regexOverrides[type][new Regex(@"^/_help")] = returnHelpPage;
 
@@ -301,8 +305,8 @@ namespace RestCake
 		/// This method is one of the core pieces of RestCake.
 		/// Inputs are the UriTemplateMatch and the service method's metadata.  But what does that mean?
 		/// Think about it from the start.  The client made a request with a url.  The ASP.NET routing matched that url to an IHttpHandler,
-		/// which happens to be a RestHttpHandler.  So in the first place, we know what class will be handler the request.
-		/// Once in the RestHttpHandler, ProcessRequest() determines which specific service method matches the UriTemplate by getting a match (UriTemplateMatch).
+		/// which happens to be a RestCakeHandler.  So in the first place, we know what class will be handler the request.
+		/// Once in the RestCakeHandler, ProcessRequest() determines which specific service method matches the UriTemplate by getting a match (UriTemplateMatch).
 		/// From the match, we can get the values of the bound variables (the {} placeholders in the uri template, so something like "{id}", we get the string value
 		/// for id in the url).
 		/// The second arg is the MethodMetadata.  So now we know WHAT service method we need to call, and we have the argument values we need to pass that method,
@@ -351,7 +355,7 @@ namespace RestCake
 				}
 				else if (IsXml)
 				{
-					throw sendErrorToClientAndCloseResponse(new NotSupportedException("text/xml is not currently supported by the RestHttpHandler"));
+					throw sendErrorToClientAndCloseResponse(new NotSupportedException("text/xml is not currently supported by the RestCakeHandler"));
 				}
 				else if (IsJson)
 				{
@@ -407,7 +411,7 @@ namespace RestCake
 				}
 				else
 				{
-					string message = "RestHttpHandler does not currently support the content type \"" + RequestContentType + "\"";
+					string message = "RestCakeHandler does not currently support the content type \"" + RequestContentType + "\"";
 					throw sendErrorToClientAndCloseResponse(new NotSupportedException(message));
 				}
 
@@ -743,6 +747,41 @@ namespace RestCake
 			context.Response.Write(s_jsProxies[type][cacheKey]);
 		}
 
+		/// <summary>
+		/// This is used for an automatically setup regex override, so it matches the signature for that.
+		/// This was set up in <see cref="initializeMetadata" />.
+		/// </summary>
+		private static void returnAmdClientDefinition(Match match, Type type, string everythingAfterRouteUrl, HttpContext context)
+		{
+			context.Response.ContentType = "text/javascript";
+			string protocol = context.Request.IsSecureConnection ? "https" : "http";
+			string cacheKey = protocol + ":" + context.Request.Url.Query.ToLower() + "-amd";
+
+			if (s_jsProxies[type].ContainsKey(cacheKey))
+			{
+				// TODO: anything with the charset?  Does it matter?  Do I need to see what came in the request?
+				context.Response.Write(s_jsProxies[type][cacheKey]);
+				return;
+			}
+
+			var stringWriter = new StringWriter();
+			var clientWriter = new AmdClientWriter(stringWriter);
+			string rawUrl = context.Request.RawUrl.ToLower();
+			foreach (var pair in rawUrl.Contains("allclasses=true") ? Cake.Services : Cake.Services.Where(s => s.Value.Type.FullName == type.FullName))
+			{
+				string baseUrl = protocol + "://" + context.Request.ServerVariables["SERVER_NAME"] + context.Request.RawUrl;
+				baseUrl = baseUrl.Substring(0, baseUrl.IndexOf(everythingAfterRouteUrl, StringComparison.Ordinal));
+				if (!baseUrl.EndsWith("/"))
+					baseUrl += "/";
+
+				clientWriter.WriteServiceClient(pair.Value, baseUrl);
+			}
+
+			// cache it
+			s_jsProxies[type][cacheKey] = stringWriter.ToString();
+			context.Response.Write(s_jsProxies[type][cacheKey]);
+		}
+
 
 
 		// ********************************************************************************
@@ -949,7 +988,7 @@ namespace RestCake
 
 		// ********************************************************************************
 		// *** Public static methods ******************************************************
-		// *** These methods don't neccessarily have anything to do with the specific processing in the RestHttpHandler,
+		// *** These methods don't neccessarily have anything to do with the specific processing in the RestCakeHandler,
 		// *** but this class servers as the best entry point to access these static utility methods, API-wise.
 		// ********************************************************************************
 

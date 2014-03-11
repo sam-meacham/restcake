@@ -9,7 +9,7 @@ namespace RestCake
 	public static class Cake
 	{
 		/// <summary>
-		/// Every RestHttpHandler service in the current AppDomain. This is populated from <see cref="RestCakeModule.Init" />.
+		/// Every RestCakeHandler service in the current AppDomain. This is populated from <see cref="RestCakeModule.Init" />.
 		/// </summary>
 		public static readonly ConcurrentDictionary<Type, ServiceMetadata> Services = new ConcurrentDictionary<Type, ServiceMetadata>();
 
