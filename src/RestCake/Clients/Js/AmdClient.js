@@ -17,6 +17,10 @@
 			}
 		};
 
+		this.getDefaultErrorCallback = function (msg) {
+			return function (err) { self.defaultErrorHandler(msg); };
+		};
+
 		$$ServiceMethods
 
 	}; // end of $$JsClassName function

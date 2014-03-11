@@ -20,7 +20,7 @@
 			}
 
 			userContext = userContext || null;
-			errorCallback = errorCallback || self.defaultErrorHandler("$$DefaultErrorMessage");
+			errorCallback = errorCallback || self.getDefaultErrorCallback ("$$DefaultErrorMessage");
 			var dataArg = $$DataArg;
 			var xhr = this._client.invoke($$MethodUrl, "$$HttpVerb", dataArg, successCallback, errorCallback, userContext, $$IsWrappedResponse, $$isJsonp);
 			return xhr;
