@@ -181,11 +181,12 @@ namespace RestCake
 
 				// Set up a "regex backdoor" for the js and clr clients, and the help page
 				s_regexOverrides[type] = new Dictionary<Regex, Action<Match, Type, string, HttpContext>>();
-				// new amd module (requirejs, etc) friendly one for LamLoader
-				s_regexOverrides[type][new Regex(@"^/_js\?type=amd.*$")] = returnAmdClientDefinition;
 
-				// TEMP: TEST: Pre-working amd client
-				s_regexOverrides[type][new Regex(@"^/_js\?type=amdja.*$")] = returnAmdJsClientDefinition;
+				// "amd2" client, in hindsight, I realized I shouldn't return the class, but a working client
+				s_regexOverrides[type][new Regex(@"^/_js\?type=amd2.*$")] = returnAmd2JsClientDefinition;
+
+				// original amd module (requirejs), returns the client class.
+				s_regexOverrides[type][new Regex(@"^/_js\?type=amd.*$")] = returnAmdClientDefinition;
 
 				s_regexOverrides[type][new Regex(@"^/_js\?(?<type>\w+).*$")] = returnJsClientDefinition;
 
@@ -840,7 +841,7 @@ namespace RestCake
 			}
 
 			var stringWriter = new StringWriter();
-			var clientWriter = new AmdClientWriter(stringWriter);
+			var clientWriter = new AmdClientWriter2(stringWriter);
 			string rawUrl = context.Request.RawUrl.ToLower();
 			foreach (var pair in rawUrl.Contains("allclasses=true") ? Cake.Services : Cake.Services.Where(s => s.Value.Type.FullName == type.FullName))
 			{

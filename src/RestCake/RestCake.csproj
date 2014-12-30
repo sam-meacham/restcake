@@ -82,6 +82,7 @@
     <Compile Include="AuthRules\SkipAuthorizationRulesConfigSectionHandler.cs" />
     <Compile Include="BodyStyle.cs" />
     <Compile Include="Attributes\RestServiceAttribute.cs" />
+    <Compile Include="Clients\AmdClientWriter2.cs" />
     <Compile Include="Clients\ClientWriterBase.cs" />
     <Compile Include="Clients\ClrClientWriter.cs" />
     <Compile Include="Clients\AmdClientWriter.cs" />
@@ -146,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Clients\Js\AmdServiceMethod-jqueryFormSerialize.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Clients\Js\AmdClient2.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
