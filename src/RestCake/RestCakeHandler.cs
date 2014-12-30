@@ -184,6 +184,9 @@ namespace RestCake
 				// new amd module (requirejs, etc) friendly one for LamLoader
 				s_regexOverrides[type][new Regex(@"^/_js\?type=amd.*$")] = returnAmdClientDefinition;
 
+				// TEMP: TEST: Pre-working amd client
+				s_regexOverrides[type][new Regex(@"^/_js\?type=amdja.*$")] = returnAmdJsClientDefinition;
+
 				s_regexOverrides[type][new Regex(@"^/_js\?(?<type>\w+).*$")] = returnJsClientDefinition;
 
 				s_regexOverrides[type][new Regex(@"^/_cs\?type=(?<type>\w+)&namespace=(?<namespace>\w+)$")] = returnClrClientDefinition;
@@ -783,6 +786,76 @@ namespace RestCake
 		}
 
 
+		/// <summary>
+		/// This is used for an automatically setup regex override, so it matches the signature for that.
+		/// This was set up in <see cref="initializeMetadata" />.
+		/// </summary>
+		private static void returnAmdJsClientDefinition(Match match, Type type, string everythingAfterRouteUrl, HttpContext context)
+		{
+			context.Response.ContentType = "text/javascript";
+			string protocol = context.Request.IsSecureConnection ? "https" : "http";
+			string cacheKey = protocol + ":" + context.Request.Url.Query.ToLower() + "-amdja";
+
+			if (s_jsProxies[type].ContainsKey(cacheKey))
+			{
+				// TODO: anything with the charset?  Does it matter?  Do I need to see what came in the request?
+				context.Response.Write(s_jsProxies[type][cacheKey]);
+				return;
+			}
+
+			var stringWriter = new StringWriter();
+			var clientWriter = new AmdClientWriter(stringWriter);
+			string rawUrl = context.Request.RawUrl.ToLower();
+			foreach (var pair in rawUrl.Contains("allclasses=true") ? Cake.Services : Cake.Services.Where(s => s.Value.Type.FullName == type.FullName))
+			{
+				string baseUrl = protocol + "://" + context.Request.ServerVariables["SERVER_NAME"] + context.Request.RawUrl;
+				baseUrl = baseUrl.Substring(0, baseUrl.IndexOf(everythingAfterRouteUrl, StringComparison.Ordinal));
+				if (!baseUrl.EndsWith("/"))
+					baseUrl += "/";
+
+				clientWriter.WriteServiceClient(pair.Value, baseUrl);
+			}
+
+			// cache it
+			s_jsProxies[type][cacheKey] = stringWriter.ToString();
+			context.Response.Write(s_jsProxies[type][cacheKey]);
+		}
+
+
+		/// <summary>
+		/// This is used for an automatically setup regex override, so it matches the signature for that.
+		/// This was set up in <see cref="initializeMetadata" />.
+		/// </summary>
+		private static void returnAmd2JsClientDefinition(Match match, Type type, string everythingAfterRouteUrl, HttpContext context)
+		{
+			context.Response.ContentType = "text/javascript";
+			string protocol = context.Request.IsSecureConnection ? "https" : "http";
+			string cacheKey = protocol + ":" + context.Request.Url.Query.ToLower() + "-amdja";
+
+			if (s_jsProxies[type].ContainsKey(cacheKey))
+			{
+				// TODO: anything with the charset?  Does it matter?  Do I need to see what came in the request?
+				context.Response.Write(s_jsProxies[type][cacheKey]);
+				return;
+			}
+
+			var stringWriter = new StringWriter();
+			var clientWriter = new AmdClientWriter(stringWriter);
+			string rawUrl = context.Request.RawUrl.ToLower();
+			foreach (var pair in rawUrl.Contains("allclasses=true") ? Cake.Services : Cake.Services.Where(s => s.Value.Type.FullName == type.FullName))
+			{
+				string baseUrl = protocol + "://" + context.Request.ServerVariables["SERVER_NAME"] + context.Request.RawUrl;
+				baseUrl = baseUrl.Substring(0, baseUrl.IndexOf(everythingAfterRouteUrl, StringComparison.Ordinal));
+				if (!baseUrl.EndsWith("/"))
+					baseUrl += "/";
+
+				clientWriter.WriteServiceClient(pair.Value, baseUrl);
+			}
+
+			// cache it
+			s_jsProxies[type][cacheKey] = stringWriter.ToString();
+			context.Response.Write(s_jsProxies[type][cacheKey]);
+		}
 
 		// ********************************************************************************
 		// *** Public methods *************************************************************
