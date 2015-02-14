@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -101,6 +102,16 @@ namespace RestCake
 		public Type ThisType { get; private set; }
 		public string AbsBaseUrl { get; private set; }
 		public string EverythingAfterRouteUrl { get; private set; }
+
+
+		public string OriginHost { get; set; }
+
+		public string Origin { get; set; }
+
+		public string Host { get; set; }
+
+		public bool IsCors { get; set; }
+		public bool IsCorsPreflight { get; set; }
 
 		private static readonly string JSON_CALLBACK_PARAM_NAME = "jsoncallback";
 
@@ -831,7 +842,9 @@ namespace RestCake
 		{
 			context.Response.ContentType = "text/javascript";
 			string protocol = context.Request.IsSecureConnection ? "https" : "http";
-			string cacheKey = protocol + ":" + context.Request.Url.Query.ToLower() + "-amdja";
+			string cacheKey = protocol + ":"
+				+ context.Request.Url.Host + ":"
+				+ context.Request.Url.Query.ToLower() + "-amdja";
 
 			if (s_jsProxies[type].ContainsKey(cacheKey))
 			{
@@ -953,19 +966,45 @@ namespace RestCake
 		public override void ProcessRequest(HttpContext context)
 		{
 			// Get some basic info about the request into this class' member vars
-			Request = context.Request;
-			Response = context.Response;
-			Context = context;
-			RequestContentType = Request.ContentType.ToLower();
-			RequestVerb = Request.HttpMethod.ToUpper();
-			IsFormUrlEncoded = RequestContentType.Contains("application/x-www-form-urlencoded");
-			IsXml = RequestContentType.Contains("text/xml");
-			IsJson = RequestContentType.Contains("application/json");
-			AbsBaseUrl = RestCakeUtil.ResolveAbsoluteUrl(BaseUrl);
+			Request                 = context.Request;
+			Response                = context.Response;
+			Context                 = context;
+			RequestContentType      = Request.ContentType.ToLower();
+			RequestVerb             = Request.HttpMethod.ToUpper();
+			IsFormUrlEncoded        = RequestContentType.Contains("application/x-www-form-urlencoded");
+			IsXml                   = RequestContentType.Contains("text/xml");
+			IsJson                  = RequestContentType.Contains("application/json");
+			AbsBaseUrl              = RestCakeUtil.ResolveAbsoluteUrl(BaseUrl);
 
-			string rawUrl = Request.RawUrl;
-			int ix = rawUrl.IndexOf(BaseUrl, StringComparison.Ordinal);
+			string rawUrl           = Request.RawUrl;
+			int ix                  = rawUrl.IndexOf(BaseUrl, StringComparison.Ordinal);
 			EverythingAfterRouteUrl = rawUrl.Substring(ix + BaseUrl.Length);
+
+			Host                    = context.Request.Url.Host;
+			Origin                  = context.Request.Headers["Origin"];
+			OriginHost              = Origin == null ? "" : (new Uri(Origin)).Host;
+
+			// is this a CORS pre-flight request?
+			IsCors                  = OriginHost != "" && Host != OriginHost;
+			IsCorsPreflight         = IsCors && RequestVerb == "OPTIONS";
+
+			// CORS support, added 2/13/2015 Sam Meacham
+			if (IsCors)
+			{
+				string origin = ConfigurationManager.AppSettings["RestCake.Cors.Origin"];
+				if (String.IsNullOrWhiteSpace(origin))
+					throw new Exception("It looks like you're trying to do a CORS pre-flight request, but no RestCake.Cors.Origin setting was found in your app config file");
+				Response.AddHeader("Access-Control-Allow-Origin", origin);
+				Response.AddHeader("Access-Control-Allow-Credentials", "true");
+			}
+
+			if (IsCorsPreflight)
+			{
+				Response.AddHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorize");
+				Response.AddHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, HEAD, OPTIONS");
+				return;
+			}
+
 
 			// This can be overridden in individual service methods, but the assumption is json
 			Response.ContentType = Constants.ContentTypeJson;
@@ -1060,6 +1099,7 @@ namespace RestCake
 		}
 
 
+
 		// ********************************************************************************
 		// *** Public static methods ******************************************************
 		// *** These methods don't neccessarily have anything to do with the specific processing in the RestCakeHandler,
@@ -1071,6 +1111,16 @@ namespace RestCake
 			// If something else in the pipeline has already indicated that we should ignore auth altogether, then respect it.
 			// See the SkipAuthorizationRulesModule for examples.
 			if (context.SkipAuthorization)
+				return true;
+
+			// CORS stuff (preflight requests don't send cookies!!)
+			string verb   = context.Request.HttpMethod.ToUpper();
+			string host   = context.Request.Url.Host;
+			string origin = context.Request.Headers["Origin"];
+			string originHost = origin == null ? "" : (new Uri(origin)).Host;
+
+			// is this a CORS pre-flight request?
+			if (originHost != "" && host != originHost && verb == "OPTIONS")
 				return true;
 
 			if (checkUrlAccessForPrincipal)

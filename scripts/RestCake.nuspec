@@ -2,7 +2,7 @@
 <package>
 	<metadata>
 		<id>RestCake</id>
-		<version>1.5.17</version>
+		<version>1.6.4</version>
 		<authors>Sam Meacham</authors>
 		<owners>Sam Meacham</owners>
 		<summary>Easy rest/http services w/ auto jquery clients</summary>
